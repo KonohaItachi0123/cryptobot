@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 from .models import Threadlist
 from threading import Thread, Event
@@ -7,6 +7,7 @@ import ccxt
 import random
 import urllib.parse
 from time import sleep
+import json
 
 thread_list = []
 
@@ -184,4 +185,5 @@ def getremain(request):
     remain_data = Threadlist.objects.all().values()
     if (len(remain_data) == 0):
         return HttpResponse('dsfsd')
-    return HttpResponse(remain_data)
+
+    return JsonResponse({'foo': list(remain_data)})

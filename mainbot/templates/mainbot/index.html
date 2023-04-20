@@ -119,7 +119,6 @@
                 <th>INTERVAL_TIME</th>
                 <th>MARKET SYMBOl</th>
                 <th>REMAIN</th>
-                <th>STATUS</th>
               </tr>
             </thead>
             <tbody>
@@ -129,8 +128,7 @@
                 <td>{{ssp.max_val}}</td>
                 <td>{{ssp.interval_time}}</td>
                 <td>{{ssp.marketing_symbol}}</td>
-                <td>{{ssp.remain}}</td>
-                <td>progressive</td>
+                <td>{{ssp.crypto_remain}}</td>
               </tr>
 
               {% endfor %}
@@ -140,22 +138,39 @@
       </div>
     </div>
     <script>
-
-
       const getStatusdata = () => {
         $.get("getremain/", function (response) {
-          {% comment %} const length_response = response.length;
-          if (length_response == 0) return;
-          for (let i = 0; i < response.length; i++) {
-            console.log(response);
-            $("table tr:eq(" + (i + 1) + ") td:eq(4)").text(
-              response[i]["remain"]
-            );
-            $("table tr:eq(" + (i + 1) + ") td:eq(5)").text(
-              response[i]["status"]
-            );
-          } {% endcomment %}
+          if (response == "dsfsd") return;
+          $("table tr:not(:first)").remove();
+          response = response["foo"];
           console.log(response);
+          const length_response = response.length;
+          if (length_response == 0) return;
+          for (let j = 0; j < response.length; j++) {
+            const tableBody = $("tbody");
+
+            const newRow = $("<tr>");
+
+            // create new cells and add them to the row
+            const nameCell = $("<td>").text(response[j]["min_val"]);
+            const ageCell = $("<td>").text(response[j]["max_val"]);
+            const genderCell = $("<td>").text(response[j]["interval_time"]);
+            const intervalCell = $("<td>").text(
+              response[j]["marketing_symbol"]
+            );
+            const reaminCell = $("<td>").text(response[j]["crypto_remain"]);
+
+            newRow.append(
+              nameCell,
+              ageCell,
+              genderCell,
+              intervalCell,
+              reaminCell
+            );
+
+            // add the new row to the table body
+            tableBody.append(newRow);
+          }
         });
       };
       let interval_timer = setInterval(getStatusdata, 5000);
@@ -164,7 +179,7 @@
           if (response == "success") {
             console.log("disconnected");
             alert("all sell processes are stopped");
-            {% comment %} $("table tr:not(:first)").remove(); {% endcomment %}
+            $("table tr:not(:first)").remove();
           } else alert("something went wrong");
         });
       });
@@ -174,7 +189,6 @@
         $.get("test/", function (response) {
           console.log(response);
         });
-
       });
 
       $("#btn_start").click(function () {
@@ -198,26 +212,26 @@
           return;
         }
 
+        $.post(
+          "register/",
+          {
+            api_key: api_key,
+            secret_key: secret_key,
+            api_password: api_password,
+            min_val: min_val,
+            max_val: max_val,
+            interval_time: interval_time,
+            marketing_symbol: marketing_symbol,
+          },
 
-
-        $.post("register/",
-        {
-          api_key: api_key,
-          secret_key: secret_key,
-          api_password: api_password,
-          min_val: min_val,
-          max_val: max_val,
-          interval_time: interval_time,
-          marketing_symbol: marketing_symbol,
-        },
-
-        function(data, status){
-          if(data == "incorrect"){
-            alert("api information is incorrect");
-            return;
+          function (data, status) {
+            if (data == "incorrect") {
+              alert("api information is incorrect");
+              return;
+            }
+            console.log("connected");
           }
-          console.log("connected")
-        });
+        );
       });
     </script>
   </body>
