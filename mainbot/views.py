@@ -106,7 +106,7 @@ class SystemThread(Thread):
 
 
 syst = SystemThread()
-# syst.start()
+syst.start()
 
 # return the ccxt exchange
 
