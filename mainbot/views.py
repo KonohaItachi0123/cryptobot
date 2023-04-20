@@ -87,7 +87,7 @@ def set_exchange(api_key, secret_key, password):
 
 
 def init_thread():
-    print("2")
+
     for i in Threadlist.objects.all().values():
         exchange = set_exchange(i['api_key'], i['secret_key'], i['password'])
         new_thread = MyThread(api_key=i['api_key'], secret_key=i['secret_key'], password=i['password'],
@@ -190,10 +190,9 @@ def stopporcess(request):
 
 
 def test(request):
-    global syst
-    syst.stop()
+
     print(len(thread_list))
-    return HttpResponse("success")
+    return HttpResponse(len(thread_list))
 
 
 def getremain(request):
