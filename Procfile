@@ -1,1 +1,1 @@
-web: gunicorn mainbot.wsgi --log-file -
+web: gunicorn cryptobot.wsgi --log-file -
