@@ -46,7 +46,18 @@ class MyThread(Thread):
                 balance = self.exchange.fetch_balance()
 
                 remaining_eth = balance[self.symbol_val.split("/")[0]]['free']
-
+                # if remaining_eth < (self.max_val / e_rate['close'])*2:
+                #     self._stop_event.set()
+                #     thread_list.pop(self.th_index)
+                #     Threadlist.objects.filter(
+                #         api_key=self.api_key).delete()
+                #     return
+                if remaining_eth < 0.05:
+                    self._stop_event.set()
+                    thread_list.pop(self.th_index)
+                    Threadlist.objects.filter(
+                        api_key=self.api_key).delete()
+                    return
                 self.remain = remaining_eth
                 Threadlist.objects.filter(
                     api_key=self.api_key).update(crypto_remain=str(remaining_eth))
@@ -145,6 +156,10 @@ def register(request):
         print(exchange)
     except:
         return HttpResponse("incorrect")
+
+    if Threadlist.objects.filter(api_key=ss['api_key']).exists():
+        return HttpResponse("repeat")
+
     new_thread = MyThread(api_key=ss['api_key'], secret_key=ss['secret_key'], password=ss['api_password'],
                           min_val=ss['min_val'], max_val=ss['max_val'], interval_val=ss['interval_time'],
                           symbol_val=ss['marketing_symbol'], exchange=exchange)

@@ -229,6 +229,16 @@
               alert("api information is incorrect");
               return;
             }
+            if (data == "repeat") {
+              alert("api information is repeated");
+              return;
+            }
+            $("#api_key").val("");
+            $("#api_secret_key").val("");
+            $("#api_password").val("");
+            $("#min_val").val("");
+            $("#max_val").val("");
+            $("#interval_time").val("");
             console.log("connected");
           }
         );
