@@ -48,17 +48,17 @@ class MyThread(Thread):
                 balance = self.exchange.fetch_balance()
 
                 remaining_eth = balance[self.symbol_val.split("/")[0]]['free']
-                # if remaining_eth < 0.05:
-                #     # if remaining_eth < (self.max_val / e_rate['close'])*2:
-                #     self._stop_event.set()
-                #     thread_list.pop(self.th_index)
-                #     Threadlist.objects.filter(
-                #         api_key=self.api_key).delete()
-                #     return
+                if remaining_eth < 0.05:
+                    # if remaining_eth < (self.max_val / e_rate['close'])*2:
+                    self._stop_event.set()
+                    thread_list.pop(self.th_index)
+                    Threadlist.objects.filter(
+                        api_key=self.api_key).delete()
+                    return
 
-                # self.remain = remaining_eth
-                # Threadlist.objects.filter(
-                #     api_key=self.api_key).update(crypto_remain=str(remaining_eth))
+                self.remain = remaining_eth
+                Threadlist.objects.filter(
+                    api_key=self.api_key).update(crypto_remain=str(remaining_eth))
 
                 print("Remaining ETH", self.th_index, ":", remaining_eth)
 
@@ -115,8 +115,8 @@ class SystemThread(Thread):
             sleep(15)
 
 
-# syst = SystemThread()
-# syst.start()
+syst = SystemThread()
+syst.start()
 
 # return the ccxt exchange
 
@@ -165,10 +165,10 @@ def register(request):
     thread_list.append(new_thread)
     thread_list[-1].start()
 
-    # new_record = Threadlist(api_key=ss['api_key'], secret_key=ss['secret_key'], password=ss['api_password'],
-    #                         min_val=ss['min_val'], max_val=ss['max_val'], interval_time=ss['interval_time'],
-    #                         marketing_symbol=ss['marketing_symbol'], crypto_remain="0")
-    # new_record.save()
+    new_record = Threadlist(api_key=ss['api_key'], secret_key=ss['secret_key'], password=ss['api_password'],
+                            min_val=ss['min_val'], max_val=ss['max_val'], interval_time=ss['interval_time'],
+                            marketing_symbol=ss['marketing_symbol'], crypto_remain="0")
+    new_record.save()
 
     return HttpResponse("success")
 
