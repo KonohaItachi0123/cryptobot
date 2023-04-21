@@ -191,7 +191,8 @@ def stopporcess(request):
 def test(request):
 
     print(len(thread_list))
-    return HttpResponse(str(test_g_v), ",", str(thread_list[0].interval_val), ",", str(len(thread_list)))
+
+    return JsonResponse({'a': test_g_v, 'b': len(thread_list)})
 
 
 def getremain(request):
