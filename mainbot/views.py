@@ -89,8 +89,7 @@ def set_exchange(api_key, secret_key, password):
 
 
 def init_thread():
-    global ticket_value
-    ticket_value = False
+
     for i in Threadlist.objects.all().values():
         exchange = set_exchange(i['api_key'], i['secret_key'], i['password'])
         new_thread = MyThread(api_key=i['api_key'], secret_key=i['secret_key'], password=i['password'],
@@ -99,9 +98,6 @@ def init_thread():
 
         thread_list.append(new_thread)
         thread_list[-1].start()
-
-
-init_thread()
 
 
 class SystemThread(Thread):
@@ -114,7 +110,7 @@ class SystemThread(Thread):
 
     def run(self):
         while not self._stop_event.is_set():
-            if ticket_value:
+            if len(Threadlist.objects.all().values()) > len(thread_list):
                 for s_thread in thread_list:
                     s_thread.stop()
                 thread_list.clear()
@@ -123,7 +119,7 @@ class SystemThread(Thread):
 
 
 syst = SystemThread()
-syst.start()
+# syst.start()
 
 # return the ccxt exchange
 
