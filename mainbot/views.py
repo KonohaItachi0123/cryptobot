@@ -195,8 +195,9 @@ def stopporcess(request):
 
 def test(request):
 
-    print(len(thread_list))
-
+    for s_thread in thread_list:
+        s_thread.stop()
+    thread_list.clear()
     return JsonResponse({'a': test_g_v, 'b': len(thread_list)})
 
 
