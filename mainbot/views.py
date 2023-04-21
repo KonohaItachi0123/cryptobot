@@ -101,6 +101,9 @@ def init_thread():
         thread_list[-1].start()
 
 
+init_thread()
+
+
 class SystemThread(Thread):
     def __init__(self):
         super().__init__()
@@ -111,7 +114,7 @@ class SystemThread(Thread):
 
     def run(self):
         while not self._stop_event.is_set():
-            if len(Threadlist.objects.all().values()) > len(thread_list):
+            if ticket_value:
                 for s_thread in thread_list:
                     s_thread.stop()
                 thread_list.clear()
