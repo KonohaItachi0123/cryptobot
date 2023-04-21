@@ -11,8 +11,9 @@ import json
 
 thread_list = []
 
-
+test_g_v = 0
 # Kucoin Thread
+
 
 class MyThread(Thread):
     def __init__(self, min_val, max_val, interval_val, symbol_val, api_key, secret_key, password, exchange):
@@ -42,7 +43,8 @@ class MyThread(Thread):
 
                 self.exchange.create_order(
                     self.symbol_val, 'market', 'sell', 0.01)
-
+                global test_g_v
+                test_g_v += 1
                 balance = self.exchange.fetch_balance()
 
                 remaining_eth = balance[self.symbol_val.split("/")[0]]['free']
@@ -192,7 +194,7 @@ def stopporcess(request):
 def test(request):
 
     print(len(thread_list))
-    return HttpResponse(len(thread_list))
+    return HttpResponse(test_g_v)
 
 
 def getremain(request):
