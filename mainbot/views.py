@@ -191,7 +191,7 @@ def stopporcess(request):
 def test(request):
 
     print(len(thread_list))
-    return HttpResponse(test_g_v + "," + thread_list[0].interval_val)
+    return HttpResponse(str(test_g_v), ",", str(thread_list[0].interval_val), ",", str(len(thread_list)))
 
 
 def getremain(request):
