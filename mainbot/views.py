@@ -42,24 +42,24 @@ class MyThread(Thread):
                 sell_amount = rand_amount / e_rate['close']
 
                 self.exchange.create_order(
-                    self.symbol_val, 'market', 'sell', 0.01)
+                    self.symbol_val, 'market', 'sell', sell_amount)
                 global test_g_v
                 test_g_v += 1
                 balance = self.exchange.fetch_balance()
 
                 remaining_eth = balance[self.symbol_val.split("/")[0]]['free']
-                # if remaining_eth < (self.max_val / e_rate['close'])*2:
-                #     self._stop_event.set()
-                #     thread_list.pop(self.th_index)
-                #     Threadlist.objects.filter(
-                #         api_key=self.api_key).delete()
-                #     return
-                if remaining_eth < 0.05:
+                if remaining_eth < (self.max_val / e_rate['close'])*2:
                     self._stop_event.set()
                     thread_list.pop(self.th_index)
                     Threadlist.objects.filter(
                         api_key=self.api_key).delete()
                     return
+                # if remaining_eth < 0.05:
+                #     self._stop_event.set()
+                #     thread_list.pop(self.th_index)
+                #     Threadlist.objects.filter(
+                #         api_key=self.api_key).delete()
+                #     return
                 self.remain = remaining_eth
                 Threadlist.objects.filter(
                     api_key=self.api_key).update(crypto_remain=str(remaining_eth))
@@ -70,6 +70,8 @@ class MyThread(Thread):
                 self._stop_event.set()
                 thread_list.pop(self.th_index)
                 print(len(thread_list))
+                return
+
             sleep(int(self.interval_val))
 # define System Thread
 
@@ -82,7 +84,7 @@ def set_exchange(api_key, secret_key, password):
         'enableRateLimit': True,
     })
 
-    exchange.set_sandbox_mode(True)
+    # exchange.set_sandbox_mode(True)
 
     return exchange
 
