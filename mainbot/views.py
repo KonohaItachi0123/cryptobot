@@ -66,12 +66,11 @@ class MyThread(Thread):
 
                 print("Remaining ETH", self.th_index, ":", remaining_eth)
 
-                sleep(int(self.interval_val))
             except:
                 self._stop_event.set()
                 thread_list.pop(self.th_index)
                 print(len(thread_list))
-
+            sleep(int(self.interval_val))
 # define System Thread
 
 
