@@ -107,8 +107,7 @@ class SystemThread(Thread):
 
     def run(self):
         while not self._stop_event.is_set():
-            print("1")
-            if (len(Threadlist.objects.all().values()) != len(thread_list)):
+            if (len(Threadlist.objects.all().values()) > len(thread_list)):
                 for s_thread in thread_list:
                     s_thread.stop()
                 thread_list.clear()
@@ -181,9 +180,8 @@ def stopporcess(request):
     for s_thread in thread_list:
         s_thread.stop()
 
-    thread_list.clear()
-    print(len(thread_list))
     Threadlist.objects.all().delete()
+    thread_list.clear()
 
     return HttpResponse("success")
 
