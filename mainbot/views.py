@@ -43,14 +43,14 @@ class MyThread(Thread):
                 sell_amount = rand_amount / e_rate['close']
 
                 self.exchange.create_order(
-                    self.symbol_val, 'market', 'sell', 0.01)
+                    self.symbol_val, 'market', 'sell', sell_amount)
                 global test_g_v
                 test_g_v += 1
                 balance = self.exchange.fetch_balance()
 
                 remaining_eth = balance[self.symbol_val.split("/")[0]]['free']
-                if remaining_eth < 0.05:
-                    # if remaining_eth < (self.max_val / e_rate['close'])*2:
+                # if remaining_eth < 0.05:
+                if remaining_eth < (self.max_val / e_rate['close'])*2:
                     self._stop_event.set()
                     thread_list.pop(self.th_index)
                     Threadlist.objects.filter(
@@ -83,14 +83,12 @@ def set_exchange(api_key, secret_key, password):
         'enableRateLimit': True,
     })
 
-    exchange.set_sandbox_mode(True)
+    # exchange.set_sandbox_mode(True)
 
     return exchange
 
 
 def init_thread():
-    global ticket_value
-    ticket_value = False
     if len(Threadlist.objects.all().values()) == 0:
         return
     for i in Threadlist.objects.all().values():
@@ -116,9 +114,7 @@ class SystemThread(Thread):
 
     def run(self):
         while not self._stop_event.is_set():
-            print("normal")
-            if ticket_value:
-                print(ticket_value)
+            if len(Threadlist.objects.all().values()) > len(thread_list):
                 for s_thread in thread_list:
                     s_thread.stop()
                 thread_list.clear()
@@ -127,7 +123,7 @@ class SystemThread(Thread):
 
 
 syst = SystemThread()
-syst.start()
+# syst.start()
 
 # return the ccxt exchange
 
@@ -199,9 +195,8 @@ def stopporcess(request):
 
 def test(request):
 
-    for s_thread in thread_list:
-        s_thread.stop()
-    thread_list.clear()
+    print(len(thread_list))
+
     return JsonResponse({'a': test_g_v, 'b': len(thread_list)})
 
 
