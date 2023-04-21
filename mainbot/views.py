@@ -89,7 +89,8 @@ def set_exchange(api_key, secret_key, password):
 
 
 def init_thread():
-
+    if len(Threadlist.objects.all().values()) == 0:
+        return
     for i in Threadlist.objects.all().values():
         exchange = set_exchange(i['api_key'], i['secret_key'], i['password'])
         new_thread = MyThread(api_key=i['api_key'], secret_key=i['secret_key'], password=i['password'],
@@ -98,6 +99,9 @@ def init_thread():
 
         thread_list.append(new_thread)
         thread_list[-1].start()
+
+
+init_thread()
 
 
 class SystemThread(Thread):
