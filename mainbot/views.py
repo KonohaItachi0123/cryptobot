@@ -13,6 +13,7 @@ thread_list = []
 
 test_g_v = 0
 # Kucoin Thread
+ticket_value = False
 
 
 class MyThread(Thread):
@@ -66,6 +67,8 @@ class MyThread(Thread):
                 self._stop_event.set()
                 thread_list.pop(self.th_index)
                 print(len(thread_list))
+                global ticket_value
+                ticket_value = True
                 return
 
             sleep(int(self.interval_val))
@@ -86,7 +89,8 @@ def set_exchange(api_key, secret_key, password):
 
 
 def init_thread():
-
+    global ticket_value
+    ticket_value = False
     for i in Threadlist.objects.all().values():
         exchange = set_exchange(i['api_key'], i['secret_key'], i['password'])
         new_thread = MyThread(api_key=i['api_key'], secret_key=i['secret_key'], password=i['password'],
@@ -107,7 +111,7 @@ class SystemThread(Thread):
 
     def run(self):
         while not self._stop_event.is_set():
-            if (len(Threadlist.objects.all().values()) > len(thread_list)):
+            if len(Threadlist.objects.all().values()) > len(thread_list):
                 for s_thread in thread_list:
                     s_thread.stop()
                 thread_list.clear()
@@ -116,7 +120,7 @@ class SystemThread(Thread):
 
 
 syst = SystemThread()
-# syst.start()
+syst.start()
 
 # return the ccxt exchange
 
@@ -195,7 +199,7 @@ def test(request):
 
 def getremain(request):
     remain_data = Threadlist.objects.all().values()
-    if (len(remain_data) == 0):
+    if len(remain_data) == 0:
         return HttpResponse('dsfsd')
 
     return JsonResponse({'foo': list(remain_data)})
